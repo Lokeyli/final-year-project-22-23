@@ -16,20 +16,16 @@ using System.Text;
 public class TCPServerBehaviour : MonoBehaviour
 {
     public TcpListener server;
-    private Socket listener;
     private Socket handler;
+    private TcpClient client;
     void Start ()
     {   
         IPAddress ip = IPAddress.Any;             
         IPEndPoint ipEndPoint = new IPEndPoint(ip, 8080);
-        listener = new(
-            ipEndPoint.AddressFamily,
-            SocketType.Stream,
-            ProtocolType.Tcp);
-        listener.Bind(ipEndPoint);
-        listener.Blocking = false;
-        Debug.Log("Server created.");
-        listener.Listen(100);
+        server = new TcpListener(ipEndPoint);
+        server.Start();
+        // listener.Blocking = false;
+        Debug.Log("HTTP Server created.");
     }
 
     public void OnDestroy()
@@ -41,11 +37,37 @@ public class TCPServerBehaviour : MonoBehaviour
     {   
         try{
             if (handler == null){
-                handler = listener.Accept();
+                // Simply assume the first connection is from kilidokit 
+                // and is a GET method.
+
+                // https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API/Writing_WebSocket_server
+                client = server.AcceptTcpClient();
+                NetworkStream stream = client.GetStream();
+                while(client.Available < 3)
+                {
+                // wait for enough bytes to be available
+                }
+
+                Byte[] bytes = new Byte[client.Available];
+                stream.Read(bytes, 0, bytes.Length);
+                String data = Encoding.UTF8.GetString(bytes);
+                const string eol = "\r\n"; // HTTP/1.1 defines the sequence CR LF as the end-of-line marker
+                Byte[] response = Encoding.UTF8.GetBytes("HTTP/1.1 101 Switching Protocols" + eol
+                    + "Connection: Upgrade" + eol
+                    + "Upgrade: websocket" + eol
+                    + "Sec-WebSocket-Accept: " + Convert.ToBase64String(
+                        System.Security.Cryptography.SHA1.Create().ComputeHash(
+                            Encoding.UTF8.GetBytes(
+                                new System.Text.RegularExpressions.Regex("Sec-WebSocket-Key: (.*)").Match(data).Groups[1].Value.Trim() + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
+                            )
+                        )
+                    ) + eol
+                    + eol);
+                stream.Write(response, 0, response.Length);
                 Debug.Log("Accepted a connection");
-                byte[] msg = Encoding.UTF8.GetBytes("Server: Connected\n");
-                byte[] bytes = new byte[256];
-                handler.Send(msg, 0, msg.Length, SocketFlags.None);
+                // byte[] msg = Encoding.UTF8.GetBytes("Server: Connected\n");
+                // byte[] bytes = new byte[256];
+                // handler.Send(msg, 0, msg.Length, SocketFlags.None);
             }
             else {
                 // Check if the connection still exists
