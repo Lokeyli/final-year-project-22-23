@@ -11,8 +11,8 @@ public class ServerBehaviour : MonoBehaviour
     public NetworkDriver m_Driver;
     private NativeList<NetworkConnection> m_Connections;
 
-    void Start ()
-    {   
+    void Start()
+    {
         m_Driver = NetworkDriver.Create();
         var endpoint = NetworkEndPoint.AnyIpv4; // The local address to which the client will connect to is 127.0.0.1
         //endpoint.Address = '127.0.0.0';
@@ -36,7 +36,7 @@ public class ServerBehaviour : MonoBehaviour
         }
     }
 
-    void Update ()
+    void Update()
     {
         m_Driver.ScheduleUpdate().Complete();
         // CleanUpConnections
@@ -68,7 +68,7 @@ public class ServerBehaviour : MonoBehaviour
                     uint number = stream.ReadUInt();
 
                     Debug.Log("Got " + number + " from the Client adding + 2 to it.");
-                    number +=2;
+                    number += 2;
 
                     m_Driver.BeginSend(NetworkPipeline.Null, m_Connections[i], out var writer);
                     writer.WriteUInt(number);

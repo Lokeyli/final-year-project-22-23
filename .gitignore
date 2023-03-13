@@ -58,3 +58,13 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# Generated train data
+*.png
+*.jpg
+*.csv
+
+# Generated models, comment this out when submit
+*.pkl
+
+# MacOS files
+.DS_Store

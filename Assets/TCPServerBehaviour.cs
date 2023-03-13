@@ -11,16 +11,14 @@ using System.Text;
 // TcpListener: 
 // https://learn.microsoft.com/zh-cn/dotnet/api/system.net.sockets.tcplistener?view=net-7.0
 
-
-
 public class TCPServerBehaviour : MonoBehaviour
 {
     public TcpListener server;
     private Socket handler;
     private TcpClient client;
-    void Start ()
-    {   
-        IPAddress ip = IPAddress.Any;             
+    void Start()
+    {
+        IPAddress ip = IPAddress.Any;
         IPEndPoint ipEndPoint = new IPEndPoint(ip, 8080);
         server = new TcpListener(ipEndPoint);
         server.Start();
@@ -30,17 +28,20 @@ public class TCPServerBehaviour : MonoBehaviour
 
     public void OnDestroy()
     {
-        
+
     }
 
-    void Update ()
-    {   
-        if (client == null && server.Pending()){
+    void Update()
+    {
+        if (client == null && server.Pending())
+        {
             ConnectKalidoKit();
         }
-        else if (client != null){
+        else if (client != null)
+        {
             // Check if the connection still exists
-            if(client.Client.Poll(100, SelectMode.SelectRead) && client.Available == 0){
+            if (client.Client.Poll(100, SelectMode.SelectRead) && client.Available == 0)
+            {
                 Debug.Log("Client disconnected");
                 client = null;
                 return;
@@ -48,14 +49,15 @@ public class TCPServerBehaviour : MonoBehaviour
             ReadKalidoKit();
         }
     }
-    private void ConnectKalidoKit(){
+    private void ConnectKalidoKit()
+    {
         // Simply assume the first connection is from kilidokit 
         // and is a GET method.
 
         // https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API/Writing_WebSocket_server
         client = server.AcceptTcpClient();
         NetworkStream stream = client.GetStream();
-        while(client.Available < 3)
+        while (client.Available < 3)
         {
             // Wait for the client to send the GET method
         }
@@ -79,8 +81,10 @@ public class TCPServerBehaviour : MonoBehaviour
         Debug.Log("Accepted a connection");
     }
 
-    private void ReadKalidoKit(){
-        if(client.Available == 0){
+    private void ReadKalidoKit()
+    {
+        if (client.Available == 0)
+        {
             return;
         }
         NetworkStream stream = client.GetStream();
