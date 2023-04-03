@@ -297,6 +297,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -73690430385757562, guid: 3030b5f307f564613a6e5b02f8e00f31, type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[67]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -73690430385757562, guid: 3030b5f307f564613a6e5b02f8e00f31, type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[68]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -73690430385757562, guid: 3030b5f307f564613a6e5b02f8e00f31, type: 3}
+      propertyPath: m_BlendShapeWeights.Array.data[71]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -73690430385757562, guid: 3030b5f307f564613a6e5b02f8e00f31, type: 3}
       propertyPath: m_BlendShapeWeights.Array.data[174]
       value: 0
       objectReference: {fileID: 0}
@@ -406,9 +418,21 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1228645445}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a01f8e8cdb50c4db6bad912da424f563, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1228645449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1228645445}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9a4445eba01848f29ef5de59660c878, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1950095683
