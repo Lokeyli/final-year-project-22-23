@@ -15,7 +15,7 @@ public class BlendShapeGenerator : MonoBehaviour
 
     SkinnedMeshRenderer skinnedMeshRenderer;
     Mesh skinnedMesh;
-    float blendStep = 2f;
+    float blendStep = 0.5f;
     bool blendFinished = false;
     int i = 0;
     List<int> blendshapes_i = new List<int>();

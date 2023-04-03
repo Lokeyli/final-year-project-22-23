@@ -2,11 +2,14 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 using Unity.Collections;
+using System.Collections.Generic;
 
 using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 // TcpListener: 
 // https://learn.microsoft.com/zh-cn/dotnet/api/system.net.sockets.tcplistener?view=net-7.0
@@ -16,14 +19,40 @@ public class TCPServerBehaviour : MonoBehaviour
     public TcpListener server;
     private Socket handler;
     private TcpClient client;
+    SkinnedMeshRenderer skinnedMeshRenderer;
+    Mesh skinnedMesh;
+    List<int> blendshapes_i = new List<int>();
+    List<int> blendshapesWeights = new List<int>();
+    int blendShapeCount;
+
+    void Awake()
+    {
+        skinnedMeshRenderer = GetComponent<SkinnedMeshRenderer>();
+        skinnedMesh = GetComponent<SkinnedMeshRenderer>().sharedMesh;
+    }
+
+
     void Start()
     {
+        // Create the socket server.
         IPAddress ip = IPAddress.Any;
         IPEndPoint ipEndPoint = new IPEndPoint(ip, 8080);
         server = new TcpListener(ipEndPoint);
         server.Start();
-        // listener.Blocking = false;
         Debug.Log("HTTP Server created.");
+
+
+        // Put all the AU blendshapes' index into a list
+        Regex FACSRegex = new Regex(".*AU.*");
+        blendShapeCount = skinnedMesh.blendShapeCount;
+        for (int i = 0; i < blendShapeCount; i++)
+        {
+            string blendShapeName = skinnedMesh.GetBlendShapeName(i);
+            if (FACSRegex.IsMatch(blendShapeName))
+            {
+                blendshapes_i.Add(i);
+            }
+        }
     }
 
     public void OnDestroy()
@@ -35,7 +64,7 @@ public class TCPServerBehaviour : MonoBehaviour
     {
         if (client == null && server.Pending())
         {
-            ConnectKalidoKit();
+            ConnectClient();
         }
         else if (client != null)
         {
@@ -46,10 +75,10 @@ public class TCPServerBehaviour : MonoBehaviour
                 client = null;
                 return;
             }
-            ReadKalidoKit();
+            ReadClient();
         }
     }
-    private void ConnectKalidoKit()
+    private void ConnectClient()
     {
         // Simply assume the first connection is from kilidokit 
         // and is a GET method.
@@ -81,24 +110,25 @@ public class TCPServerBehaviour : MonoBehaviour
         Debug.Log("Accepted a connection");
     }
 
-    private void ReadKalidoKit()
+    private void ReadClient()
     {
         if (client.Available == 0)
         {
             return;
         }
         NetworkStream stream = client.GetStream();
+        Debug.Log(client.Available);
         Byte[] bytes = new Byte[client.Available];
         stream.Read(bytes, 0, bytes.Length);
         String data = Encoding.UTF8.GetString(bytes);
-        Debug.Log(data);
-        // string receiveString = "";
-        // byte[] receiveBytes = new byte[4096];
-        // int nBytes;
-        // nBytes = handler.Receive(receiveBytes, receiveBytes.Length, 0); //0 for None
-        // receiveString += Encoding.ASCII.GetString(receiveBytes, 0, nBytes);
-        // Debug.Log(receiveString);
-        // byte[] msg = Encoding.UTF8.GetBytes("Server: Echo > " + receiveString);
-        // handler.Send(msg, 0, msg.Length, SocketFlags.None);
+        int[] array = JsonConvert.DeserializeObject<int[]>(data);
+        // blendshapesWeights = array.ToList();
+        if (array.Length != 0)
+        {
+            for (int i = 0; i < blendshapes_i.Count; i++)
+            {
+                skinnedMeshRenderer.SetBlendShapeWeight(blendshapes_i[i], array[i]);
+            }
+        }
     }
 }
