@@ -147,15 +147,16 @@ def main_loop():
             predict_df = pd.DataFrame([arr], columns=HEADERS[2:])
             blendshape_weight = []
             for idx, model in enumerate(predictors):
-                blendshape_weight.append(
-                    int(
-                        model.predict(
-                            selectors[idx].transform(
-                                distance_for_prediction(predict_df)
-                            )
-                        )[0]
-                    )
+                weight = int(
+                    model.predict(
+                        selectors[idx].transform(distance_for_prediction(predict_df))
+                    )[0]
                 )
+                if weight < 0:
+                    weight = 0
+                if weight > 100:
+                    weight = 100
+                blendshape_weight.append(weight)
             global blendshape_weights
             blendshape_weights.put(blendshape_weight)
 

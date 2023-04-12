@@ -15,12 +15,12 @@ public class BlendShapeGenerator : MonoBehaviour
 
     SkinnedMeshRenderer skinnedMeshRenderer;
     Mesh skinnedMesh;
-    float blendStep = 0.5f;
+    float blendStep = 1.0f;
     bool blendFinished = false;
     int i = 0;
     List<int> blendshapes_i = new List<int>();
     float blendWeight = 0f;
-    string textFile = "blendshapes.csv";
+    string textFile = "blendshapes_name.csv";
     FileStream file;
 
     void Awake()
@@ -83,14 +83,20 @@ public class BlendShapeGenerator : MonoBehaviour
         // Save the filename to a txt for other pipeline to use.
         if (i < blendshapes_i.Count)
         {
-            skinnedMeshRenderer.SetBlendShapeWeight(blendshapes_i[i], blendWeight);
-            string fileName = string.Format("index{0}-weight{1:C0}.png", blendshapes_i[i], blendWeight);
-            ScreenCapture.CaptureScreenshot(fileName);
-            string filePath = Path.GetFullPath(fileName);
-            string line = string.Format("{0}, {1}, {2}\n", blendshapes_i[i], blendWeight, filePath);
+            // skinnedMeshRenderer.SetBlendShapeWeight(blendshapes_i[i], blendWeight);
+            // string fileName = string.Format("index{0}-weight{1:C0}.png", blendshapes_i[i], blendWeight);
+            // ScreenCapture.CaptureScreenshot(fileName);
+            // string filePath = Path.GetFullPath(fileName);
+            // string line = string.Format("{0}, {1}, {2}\n", blendshapes_i[i], blendWeight, filePath);
+            // byte[] bytes = Encoding.UTF8.GetBytes(line);
+            // file.Write(bytes, 0, bytes.Length);
+            // blendWeight += blendStep;
+            // Debug.Log("Save to " + filePath);
+            string blendShapeName = skinnedMeshRenderer.sharedMesh.GetBlendShapeName(blendshapes_i[i]);
+            string line = string.Format("{0}, {1}\n", blendshapes_i[i], blendShapeName);
             byte[] bytes = Encoding.UTF8.GetBytes(line);
             file.Write(bytes, 0, bytes.Length);
-            blendWeight += blendStep;
+            i++;
         }
         else
         {
