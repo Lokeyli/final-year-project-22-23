@@ -16,10 +16,11 @@ public class BlendShapeGenerator : MonoBehaviour
     SkinnedMeshRenderer skinnedMeshRenderer;
     Mesh skinnedMesh;
     float blendStep = 1.0f;
-    bool blendFinished = false;
+    public bool isFinished = false;
     int i = 0;
     List<int> blendshapes_i = new List<int>();
     float blendWeight = 0f;
+    string avatar_name;
     string textFile = "blendshapes_name.csv";
     FileStream file;
 
@@ -27,6 +28,11 @@ public class BlendShapeGenerator : MonoBehaviour
     {
         skinnedMeshRenderer = GetComponent<SkinnedMeshRenderer>();
         skinnedMesh = GetComponent<SkinnedMeshRenderer>().sharedMesh;
+        // Assuming the avatar structure follows the initial import setting.
+        // (Fe)male_xxxx_yy_facial
+        //   |- Bip01
+        //   |- xxx_hipoly_81_bones_opacity  < This script is here
+        avatar_name = transform.parent.name;
     }
 
     void Start()
@@ -67,7 +73,7 @@ public class BlendShapeGenerator : MonoBehaviour
     */
     void Update()
     {
-        if (blendFinished)
+        if (isFinished)
         {
             return;
         }
@@ -83,27 +89,20 @@ public class BlendShapeGenerator : MonoBehaviour
         // Save the filename to a txt for other pipeline to use.
         if (i < blendshapes_i.Count)
         {
-            // skinnedMeshRenderer.SetBlendShapeWeight(blendshapes_i[i], blendWeight);
-            // string fileName = string.Format("index{0}-weight{1:C0}.png", blendshapes_i[i], blendWeight);
+            skinnedMeshRenderer.SetBlendShapeWeight(blendshapes_i[i], blendWeight);
+            string fileName = string.Format("{0}-index{1}-weight{2:f0}.png", avatar_name, blendshapes_i[i], blendWeight);
             // ScreenCapture.CaptureScreenshot(fileName);
-            // string filePath = Path.GetFullPath(fileName);
-            // string line = string.Format("{0}, {1}, {2}\n", blendshapes_i[i], blendWeight, filePath);
-            // byte[] bytes = Encoding.UTF8.GetBytes(line);
-            // file.Write(bytes, 0, bytes.Length);
-            // blendWeight += blendStep;
-            // Debug.Log("Save to " + filePath);
-            string blendShapeName = skinnedMeshRenderer.sharedMesh.GetBlendShapeName(blendshapes_i[i]);
-            string line = string.Format("{0}, {1}\n", blendshapes_i[i], blendShapeName);
+            string filePath = Path.GetFullPath(fileName);
+            string line = string.Format("{0}, {1}, {2}\n", blendshapes_i[i], blendWeight, filePath);
             byte[] bytes = Encoding.UTF8.GetBytes(line);
-            file.Write(bytes, 0, bytes.Length);
-            i++;
+            // file.Write(bytes, 0, bytes.Length);
+            blendWeight += blendStep;
+            Debug.Log("Save to " + filePath);
         }
         else
         {
-            blendFinished = true;
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#endif
+            file.Close();
+            isFinished = true;
         }
     }
 
