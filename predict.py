@@ -12,7 +12,7 @@ import pandas as pd
 import sklearn as sk
 from pandas import DataFrame
 
-from settings import *
+from settings_old import *
 
 mp_drawing = mp.solutions.drawing_utils  # type: ignore
 mp_drawing_styles = mp.solutions.drawing_styles  # type: ignore
@@ -63,21 +63,22 @@ def distance_for_prediction(input_df: DataFrame) -> DataFrame:
     return distance_train_data
 
 
+ADDRESS = ("localhost", 8080)
+
 def websocket_client():
-    server_address = ("localhost", 8080)
+    server_address = ADDRESS
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client.connect(server_address)
     while True:
-        global blendshape_weights
-        global terminate_event
+        global blendshape_weights: list
+        global terminate_event: list
         if terminate_event.is_set():
             break
         if blendshape_weights.empty():
             continue
         json_weights = json.dumps(blendshape_weights.get())
-        print(json_weights)
         client.sendall(json_weights.encode("utf-8"))
-        # client.close()
+    client.close()
 
 
 def load_models() -> Tuple[List[Any], List[Any]]:
