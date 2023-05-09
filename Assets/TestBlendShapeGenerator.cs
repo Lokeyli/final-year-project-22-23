@@ -15,7 +15,7 @@ public class TestBlendShapeGenerator : MonoBehaviour
 
     SkinnedMeshRenderer skinnedMeshRenderer;
     Mesh skinnedMesh;
-    float blendStep = 1.0f;
+    float blendStep = 5.0f;
     public bool isFinished = false;
     int i = 0;
     List<int> blendshapes_i = new List<int>();
@@ -107,6 +107,11 @@ public class TestBlendShapeGenerator : MonoBehaviour
         {
             file.Close();
             isFinished = true;
+#if UNITY_EDITOR
+            Debug.Log("Finish iterating all the avatars");
+            UnityEditor.EditorApplication.isPlaying = false;
+            return;
+#endif  
         }
     }
 
