@@ -11,7 +11,7 @@ public class SetBlendshapeBehaviour : MonoBehaviour
     SkinnedMeshRenderer skinnedMeshRenderer;
     Mesh skinnedMesh;
     List<int> blendshapes_i = new List<int>();
-    List<int> blendshapesWeight = new List<int>() { 84, 100, 100, 0, 0, 18, 100, 0, 0, 0, 0, 100, 0, 0, 0, 33, 0, 34, 0, 100, 0, 0, 33, 4, 8, 4, 11, 11, 25, 0, 0, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 19, 0, 2, 0, 0, 0, 0 };
+    List<int> blendshapesWeight = new List<int>() { 19, 30, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 67, 82, 90, 0, 88, 0, 0, 0, 88, 0, 0, 0, 100, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 97, 0, 100, 7, 0, 0, 0, 0 };
     int blendShapeCount;
 
     void Awake()

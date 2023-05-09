@@ -77,7 +77,6 @@ public class SwitchAvatarBehaviour : MonoBehaviour
         Vector3 currentPos = m_camera.transform.position;
         double new_y = height * (6.75 / 7.5);
         m_camera.transform.position = new Vector3(currentPos.x, (float)new_y, currentPos.z);
-        Debug.Log(m_camera.transform.position);
     }
 
 }

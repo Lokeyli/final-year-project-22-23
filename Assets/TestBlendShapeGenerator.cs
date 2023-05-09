@@ -9,7 +9,7 @@ using UnityEngine;
 References
 File IO: https://learn.microsoft.com/en-us/dotnet/api/system.io.file?view=net-7.0
 */
-public class BlendShapeGenerator : MonoBehaviour
+public class TestBlendShapeGenerator : MonoBehaviour
 {
     int blendShapeCount;
 
@@ -21,7 +21,7 @@ public class BlendShapeGenerator : MonoBehaviour
     List<int> blendshapes_i = new List<int>();
     float blendWeight = 0f;
     string avatar_name;
-    string textFile = "blendshapes.csv";
+    string textFile = "test_blendshapes.csv";
     FileStream file;
 
     void Awake()

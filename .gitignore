@@ -61,10 +61,10 @@ crashlytics-build.properties
 # Generated train data
 *.png
 *.jpg
-*.csv
+# *.csv
 
 # Generated models, comment this out when submit
-*.pkl
+# *.pkl
 
 # MacOS files
 .DS_Store
